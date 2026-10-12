@@ -9,9 +9,9 @@ RecruitShield AI is an intelligent candidate discovery, integrity auditing, and 
 | Service | Target URL |
 |---|---|
 | Recruiter Dashboard (Vercel) | [https://recruit-shield-ai.vercel.app](https://recruit-shield-ai.vercel.app) |
-| Backend API Service | [https://serpapi-recruitshield.onrender.com](https://serpapi-recruitshield.onrender.com) |
-| Interactive API Documentation | [https://serpapi-recruitshield.onrender.com/docs](https://serpapi-recruitshield.onrender.com/docs) |
-| System Health Check | [https://serpapi-recruitshield.onrender.com/health](https://serpapi-recruitshield.onrender.com/health) |
+| Backend API Service (Render) | [https://recruitshield-ai.onrender.com](https://recruitshield-ai.onrender.com) |
+| Interactive API Documentation | [https://recruitshield-ai.onrender.com/docs](https://recruitshield-ai.onrender.com/docs) |
+| System Health Check | [https://recruitshield-ai.onrender.com/health](https://recruitshield-ai.onrender.com/health) |
 
 ---
 
@@ -73,12 +73,8 @@ Shortlist ordering evaluates candidates across multiple weighted dimensions:
 - Career History Relevance (10% weight): Match between previous project responsibilities and required qualifications.
 - Availability Factor (5% weight): Notice period, responsiveness, and recency of profile activity.
 
-### 3. Live Web Verification Layer
-Integrates real-time verification across search APIs:
-- Knowledge Graph Verification: Validates employer founding dates and public corporate records.
-- Google Maps Branch Geolocation: Verifies physical branch presence in claimed candidate cities.
-- Google News Operations Footprint: Confirms active corporate standing and recent press activity.
-- Resilience: Employs persistent disk caching and call budgets to prevent redundant requests.
+### 3. Live Employer Verification (SerpApi)
+RecruitShield AI integrates SerpApi as an automated web verification layer to audit candidate career claims in real time. By querying live Google Knowledge Graph corporate records and Google Maps branch geolocations, the anomaly firewall verifies whether claimed employers, founding years, and local office branches legitimately exist before candidates are shortlisted.
 
 ---
 

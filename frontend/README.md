@@ -2,6 +2,11 @@
 
 RecruitShield AI is an intelligent candidate screening and recruitment fraud detection dashboard built with React 19, TypeScript, and Vite. It provides recruiters and hiring managers with autonomous candidate verification, real-time risk scoring, telemetry feeds, and interactive candidate pipeline management.
 
+## Live Deployments
+
+- Recruiter Dashboard: [https://recruit-shield-ai.vercel.app](https://recruit-shield-ai.vercel.app)
+- Backend API Service: [https://recruitshield-ai.onrender.com](https://recruitshield-ai.onrender.com)
+
 ## Key Features
 
 - Autonomous Candidate Intelligence: Real-time risk scoring, fraud signal classification, and candidate credentials analysis.
