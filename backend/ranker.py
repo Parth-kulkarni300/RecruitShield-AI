@@ -191,24 +191,49 @@ def check_honeypot_reasons(cand):
             reasons.append(f"Expert/Advanced skill '{s['name']}' has 0 months of usage.")
             
     # 4. Job start date before company founding year & job duration exceeds company age
+    #    - First checks the local reference table (instant, zero quota).
+    #    - For unknown employers, falls back to a live Google Knowledge Graph lookup
+    #      via SerpApi (only high-confidence matches may trigger a purge).
     career = cand.get("career_history", [])
     for job in career:
         comp = job.get("company", "")
+        start_date_str = job.get("start_date")
+
         if comp in FOUNDING_YEARS:
             founding_year = FOUNDING_YEARS[comp]
-            start_date_str = job.get("start_date")
-            if start_date_str:
-                try:
-                    start_year = int(start_date_str.split("-")[0])
-                    if start_year < founding_year:
-                        reasons.append(f"Worked at {comp} starting in {start_year}, but company was founded in {founding_year}.")
-                except (ValueError, AttributeError):
-                    pass
-            dur_years = job.get("duration_months", 0) / 12.0
-            max_dur = CURRENT_REF_DATE.year - founding_year
-            if dur_years > max_dur:
-                reasons.append(f"Job duration at {comp} is {dur_years:.1f} yrs, but company was founded {max_dur} years ago.")
-                
+            evidence_tag = ""          # local table — no live-evidence citation needed
+        else:
+            # Unknown employer: attempt a live SerpApi lookup (no-op if key absent)
+            try:
+                from backend import serp_verifier as _sv
+                evidence = _sv.get_live_founding_year(comp)
+            except Exception:
+                evidence = None
+
+            if not evidence:
+                continue               # unverifiable — never purge on uncertainty
+            founding_year = evidence["founded_year"]
+            source_url = evidence.get("source_url", "")
+            evidence_tag = f" [live-verified via SerpApi: {source_url}]"
+
+        if start_date_str:
+            try:
+                start_year = int(start_date_str.split("-")[0])
+                if start_year < founding_year:
+                    reasons.append(
+                        f"Worked at {comp} starting in {start_year}, "
+                        f"but company was founded in {founding_year}.{evidence_tag}"
+                    )
+            except (ValueError, AttributeError):
+                pass
+        dur_years = job.get("duration_months", 0) / 12.0
+        max_dur = CURRENT_REF_DATE.year - founding_year
+        if dur_years > max_dur:
+            reasons.append(
+                f"Job duration at {comp} is {dur_years:.1f} yrs, "
+                f"but company was founded {max_dur} years ago.{evidence_tag}"
+            )
+
     return len(reasons) > 0, reasons
 
 def is_honeypot(cand):
